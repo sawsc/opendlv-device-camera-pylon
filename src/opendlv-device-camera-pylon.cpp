@@ -57,6 +57,8 @@ int32_t main(int32_t argc, char **argv) {
         std::cerr << "         --offsetX:    X for desired ROI (default: 0)" << std::endl;
         std::cerr << "         --offsetY:    Y for desired ROI (default: 0)" << std::endl;
         std::cerr << "         --packetsize: if supported by the adapter (eg., jumbo frames), use this packetsize (default: 1500)" << std::endl;
+        std::cerr << "         --interpacketdelay: inter-packet delay in ticks for GigE cameras (default: 0)" << std::endl;
+        std::cerr << "         --frametransmissiondelay: frame transmission delay in ticks for GigE cameras (default: 0)" << std::endl;
         std::cerr << "         --autoexposuretimeabslowerlimit: default: 26" << std::endl;
         std::cerr << "         --autoexposuretimeabsupperlimit: default: 50000" << std::endl;
         std::cerr << "         --fps:        desired acquisition frame rate (depends on bandwidth)" << std::endl;
@@ -64,6 +66,7 @@ int32_t main(int32_t argc, char **argv) {
         std::cerr << "         --verbose:    display captured image" << std::endl;
         std::cerr << "         --info:       show grabbing information " << std::endl;
         std::cerr << "Example: " << argv[0] << " --camera=0 --width=640 --height=480 --verbose" << std::endl;
+        std::cerr << "         " << argv[0] << " --camera=0 --width=640 --height=480 --interpacketdelay=1530 --frametransmissiondelay=0" << std::endl;
         retCode = 1;
     }
     else {
@@ -74,6 +77,8 @@ int32_t main(int32_t argc, char **argv) {
         const uint32_t OFFSET_X{static_cast<uint32_t>((commandlineArguments.count("offsetX") != 0) ?std::stoi(commandlineArguments["offsetX"]) : 0)};
         const uint32_t OFFSET_Y{static_cast<uint32_t>((commandlineArguments.count("offsetY") != 0) ?std::stoi(commandlineArguments["offsetY"]) : 0)};
         const uint32_t PACKET_SIZE{static_cast<uint32_t>((commandlineArguments.count("packetsize") != 0) ?std::stoi(commandlineArguments["packetsize"]) : 1500)};
+        const uint32_t INTER_PACKET_DELAY{static_cast<uint32_t>((commandlineArguments.count("interpacketdelay") != 0) ? std::stoi(commandlineArguments["interpacketdelay"]) : 0)};
+        const uint32_t FRAME_TRANSMISSION_DELAY{static_cast<uint32_t>((commandlineArguments.count("frametransmissiondelay") != 0) ? std::stoi(commandlineArguments["frametransmissiondelay"]) : 0)};
         const uint32_t AUTOEXPOSURETIMEABSLOWERLIMIT{static_cast<uint32_t>((commandlineArguments.count("autoexposuretimeabslowerlimit") != 0) ? std::stoi(commandlineArguments["autoexposuretimeabslowerlimit"]) : 26)};
         const uint32_t AUTOEXPOSURETIMEABSUPPERLIMIT{static_cast<uint32_t>((commandlineArguments.count("autoexposuretimeabsupperlimit") != 0) ? std::stoi(commandlineArguments["autoexposuretimeabsupperlimit"]) : 50000)};
         const float FPS{static_cast<float>((commandlineArguments.count("fps") != 0) ? std::stof(commandlineArguments["fps"]) : 17)};
@@ -226,6 +231,14 @@ int32_t main(int32_t argc, char **argv) {
                 // Packet size (should match MTU).
                 camera.GevSCPSPacketSize = PACKET_SIZE;
 
+                // Set inter-packet and frame transmission delays for GigE cameras
+                if (INTER_PACKET_DELAY > 0) {
+                    camera.GevSCPD = INTER_PACKET_DELAY;
+                }
+                if (FRAME_TRANSMISSION_DELAY > 0) {
+                    camera.GevSCFTD = FRAME_TRANSMISSION_DELAY;
+                }
+
                 // Enable chunks in general to read meta data.
                 if (camera.ChunkModeActive.TrySetValue(true)) {
                     // Enable time stamp chunks.
@@ -328,4 +341,3 @@ int32_t main(int32_t argc, char **argv) {
     }
     return retCode;
 }
-
