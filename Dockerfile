@@ -24,19 +24,19 @@ RUN apt-get update -y && \
     apt-get upgrade -y && \
     apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends \
-        ca-certificates \
-        cmake \
-        build-essential \
-        git \
-        libx11-dev \
-        wget && \
+    ca-certificates \
+    cmake \
+    build-essential \
+    git \
+    libx11-dev \
+    wget && \
     apt-get clean
 RUN cd /tmp && \
     git clone --depth 1 https://chromium.googlesource.com/libyuv/libyuv && \
     cd libyuv &&\
     make -f linux.mk libyuv.a && cp libyuv.a /usr/lib && cd include && cp -r * /usr/include
 RUN cd /tmp && \
-    wget https://www2.baslerweb.com/media/downloads/software/pylon_software/pylon_6.1.1.19861_x86_64_setup.tar.gz && \
+    wget https://downloads-ctf.baslerweb.com/dg51pdwahxgw/5ZA0OvQDpvkenZWbkmJ8su/82f856b977bbb9d37512802ed4acadec/pylon_6.1.1.19861_x86_64_setup.tar.gz && \
     tar xvzf pylon_6.1.1.19861_x86_64_setup.tar.gz && \
     mkdir -p /opt/pylon6 && \
     tar xvzf pylon_6.1.1.19861_x86_64.tar.gz -C /opt/pylon6
@@ -56,7 +56,7 @@ RUN apt-get update -y && \
     apt-get upgrade -y && \
     apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends \
-        libx11-dev && \
+    libx11-dev && \
     apt-get clean
 
 WORKDIR /opt/pylon6/lib
