@@ -203,9 +203,6 @@ int32_t main(int32_t argc, char **argv) {
                 camera.AcquisitionMode = Basler_UniversalCameraParams::AcquisitionMode_Continuous;
 
                 // FPS
-                camera.AcquisitionFrameRateEnable = 1;
-                camera.AcquisitionFrameRateAbs = FPS;
-
                 if (SYNC) {
                     // Set cameras to cpature at same point in time.
                     camera.SyncFreeRunTimerTriggerRateAbs = FPS;
@@ -214,6 +211,8 @@ int32_t main(int32_t argc, char **argv) {
                     camera.SyncFreeRunTimerEnable = true;
                 }
                 else {
+                    camera.AcquisitionFrameRateEnable = 1;
+                    camera.AcquisitionFrameRateAbs = FPS;
                     camera.SyncFreeRunTimerEnable = false;
                     camera.SyncFreeRunTimerUpdate();
                 }
